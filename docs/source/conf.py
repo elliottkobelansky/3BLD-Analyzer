@@ -14,6 +14,11 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src'))
 
+import mock
+MOCK_MODULES = ['numpy']
+for mod in MOCK_MODULES:
+    sys.modules[mod] = mock.Mock()
+
 
 # -- Project information -----------------------------------------------------
 
@@ -29,7 +34,8 @@ author = 'Elliott Kobelansky'
 # ones.
 extensions = [
     'sphinx.ext.napoleon',
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'myst_parser'
 ]
 
 
