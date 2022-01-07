@@ -35,7 +35,6 @@ author = 'Elliott Kobelansky'
 extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
-    'myst_parser'
 ]
 
 
