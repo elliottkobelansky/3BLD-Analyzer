@@ -10,7 +10,7 @@ Welcome to 3BLD-Analyzer's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   readme
+   modules
 
 
 
