@@ -44,7 +44,7 @@ class Piece:
         A 3-tuple representing the x, y, and z components of where
         the piece is located on a solved cube. See the ``Cube`` object's
         documentation for how these axis are defined.
-    pos : tuple or np.array
+    pos : tuple
         A 3-tuple represeting the x, y, and z components of where
         the piece is located on the cube (meaning, this value changes
         when the piece is moved). See the ``Cube`` object's
@@ -65,9 +65,8 @@ class Piece:
         
         """
         self.solved_pos = (x, y, z)
-        self.pos = np.array([x, y, z])
+        self.pos = (x, y, z)
         self.ori = np.array([0, 1, 2])
-        self.vector = np.array([x-1, y-1, z-1])
         
     def get_color(self, axis):
         """
