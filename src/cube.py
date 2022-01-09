@@ -42,13 +42,15 @@ class Piece:
     ----------
     solved_pos : tuple
         A 3-tuple representing the x, y, and z components of where
-        the piece is located on a solved cube. See the ``Cube`` object's
-        documentation for how these axis are defined.
+        the piece is located on a solved cube. The x axis starts from
+        the R face at 0 and goes to the L face at 2. The y axis starts 
+        from the D face at 0 and goes to the U face at 2. The z axis
+        starts from the F face at 0 and goes to the B face at 2.
     pos : tuple
         A 3-tuple represeting the x, y, and z components of where
         the piece is located on the cube (meaning, this value changes
-        when the piece is moved). See the ``Cube`` object's
-        documentation for how these axis are defined.
+        when the piece is moved). The axis follow the same rules as
+        described in the 'solved_pos' attribute.
     ori : array_like
         The x, y, and z parts of the piece's orientation. The three
         values in this array represent to which axis the x/y/z facing
