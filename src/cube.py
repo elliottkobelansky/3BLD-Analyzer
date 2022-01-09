@@ -3,32 +3,32 @@ import numpy as np
 FACES = {
     'L': {
         'axis': 0,
-        'pos': 1,
+        'pos': 2,
         'preview': lambda x: np.flip(x)
     },
     'R': {
         'axis': 0,
-        'pos': -1,
+        'pos': 0,
         'preview': lambda x: np.flipud(x)
     },
     'D': {
         'axis': 1,
-        'pos': -1,
+        'pos': 0,
         'preview': lambda x: np.rot90(x, -1)
     },
     'U': {
         'axis': 1,
-        'pos': 1,
+        'pos': 2,
         'preview': lambda x: np.fliplr(np.rot90(x))
     },
     'F': {
         'axis': 2,
-        'pos': -1,
+        'pos': 0,
         'preview': lambda x: np.rot90(np.flipud(x))
     },
     'B': {
         'axis': 2,
-        'pos': 1,
+        'pos': 2,
         'preview': lambda x: np.rot90(x)
     }
 }
@@ -179,7 +179,7 @@ class Cube:
             all the pieces on the given face.
         """
         index = [slice(None), slice(None), slice(None)]
-        index[FACES[face]['axis']] = FACES[face]['pos'] + 1
+        index[FACES[face]['axis']] = FACES[face]['pos']
         return tuple(index)
 
     def print_cube(self):

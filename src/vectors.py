@@ -6,7 +6,7 @@ def get_vector(name):
     name.upper()
     v = [1, 1, 1]
     for letter in name:
-        v[cb.FACES[letter]['axis']] = cb.FACES[letter]['pos'] + 1
+        v[cb.FACES[letter]['axis']] = cb.FACES[letter]['pos']
     return tuple(v)
 
 def get_name(v, o=1):
