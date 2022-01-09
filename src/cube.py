@@ -103,35 +103,6 @@ class Piece:
         solved_position = self.solved_pos[axis_of_color]
         return colors[axis_of_color][solved_position]
     
-    def is_edge(self):
-        """
-        Determines if the piece object is an edge.
-        
-        Returns
-        -------
-        is_edge : bool
-            Boolean representing whether the piece is an edge.
-        """
-        # An edge will have exactly 1 of its position coordinates as 1,
-        # because of the nature of the cube. A coordinate of 1 means
-        # that the piece is on a slice, but more than 1 of them means
-        # that it is a center or the core piece.
-        return True if tuple(self.pos).count(1) == 1 else False
-        
-    def is_corner(self):
-        """
-        Determines if the piece object is an edge.
-        
-        Returns
-        -------
-        is_corner : bool
-            Boolean representing whether the piece is a corner.
-        """
-        # A corner will have none of its position cordinates as 1,
-        # because having a 1 would put it on a slice, and, by definition,
-        # a piece that is not on a slice is a corner.
-        return True if tuple(self.pos).count(1) == 0 else False
-    
 
 class Cube:
     def __init__(self):

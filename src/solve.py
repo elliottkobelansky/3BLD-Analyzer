@@ -13,6 +13,24 @@ class Solver(cb.Cube):
         self.cornerlog = {}
         self.edgelog = {}
     
+    def solve_piece(self, buffer):
+        pos = self.where_to(buffer)
+        self.add_to_log(buffer, pos)
+        self.put_colors(buffer, pos)
+        self.swap_pos(buffer, pos)
+        self.change_parity(buffer)
+        return
+     
+    def swap_piece(self, buffer, pos, ori=0, ct=False):
+        swap_type = vc.swap_type(buffer, pos)
+        o = self.get_o(buffer, pos, ct)
+        self.color_swap(buffer, pos)
+        self.swap_pos(buffer, pos)
+        self.add_to_log(buffer, pos, o)
+     
+    def where_to(self, buffer):
+        return self.cube[buffer].pos
+    
     def count_solved(self, piecetype=None):
         counter = 0
         for piece in self.cube.flatten():
@@ -21,48 +39,36 @@ class Solver(cb.Cube):
                 if not piecetype or piece_type == piecetype: 
                         counter += 1
         return counter
-
-    def where_to(self, buffer):
-        return self.cube[buffer].pos
-
-    def swap_piece(self, buffer, pos, ori=0, ct=False):
-        # Pass in the 1st and 2nd pieces coordinates
-        # However, this doesn't tell us the orientation of the piece
-        # If we have a certain piece we have to shoot to, we know the orientation
-        # If we are breaking, we have to specify the orientation as a 3tuple
-        # We have to somehow get that 3tuple
+       
+    def color_swap(self, buffer, pos):
         swap_type = vc.swap_type(buffer, pos)
-        o = self.cube[buffer].ori[1]
-        
-        if swap_type == 1:
-            self.swap_colors(buffer, pos, 0, 2)
-        if swap_type == 2:
-            self.cube[buffer].ori = np.roll(self.cube[buffer].ori, 1)
-            self.cube[pos].ori = np.roll(self.cube[pos].ori, -1)
-        if swap_type == 3:
-            o = self.cube[pos1].ori[2]
-            self.cube[buffer].ori = np.roll(self.cube[buffer].ori, -1)
-            self.cube[pos].ori = np.roll(self.cube[pos].ori, 1)
-        if swap_type == 4:
-            if pos1.index(1) == 1:
-                o = self.cube[buffer].ori[2]
-            self.swap_colors(buffer, pos, 1, 2)
-        self.swap_pos(buffer, pos)
+        color_swaps = {
+            0: lambda: None,
+            1: lambda: self.swap_colors(buffer, pos, 0, 2),
+            2: lambda: self.roll_ori(buffer, pos, 1),
+            3: lambda: self.roll_orI(buffer, pos, -1),
+            4: lambda: self.swap_colors(buffer, pos, 1, 2)
+        }
+        color_swaps[swap_type]()
+       
+    def get_o(self, buffer, pos, ct=False):
+        swap_type = vc.swap_type(buffer, pos)
         if ct:
-            o = 1
-        self.add_to_log(buffer, pos, o)
+            return 1
+        if swap_type == 3:
+            o =  self.cube[buffer].ori[2]
+        if swap_type == 4:
+            if pos.index(1) == 1:
+                o = self.cube[buffer].ori[2]
+        else:
+            o = self.cube[buffer].ori[1]
+        return o
         
-        return 
-    
-       
-    def solve_piece(self, buffer):
-        pos = self.where_to(buffer)
-        self.add_to_log(buffer, pos)
-        self.put_colors(buffer, pos)
-        self.swap_pos(buffer, pos)
-        self.change_parity(buffer)
-        return
-       
+    def roll_ori(self, buffer, pos, k):
+        self.cube[buffer].ori = np.roll(self.cube[buffer].ori, k)
+        self.cube[pos].ori = np.roll(self.cube[pos].ori, -k)
+        
+      
     def change_parity(self, buffer):
         piecetype = vc.piece_type(buffer) 
         if piecetype == 'corner':
@@ -75,15 +81,15 @@ class Solver(cb.Cube):
         tmp1, tmp2 = [0, 0, 0], [0, 0, 0]
         for i in range(3):
             tmp1[i], tmp2[a[i]] = b[a[i]], a[i]
+        a, b = tmp1, tmp2
         self.cube[buffer].ori, self.cube[pos].ori = b, a
                 
     def swap_colors(self, pos1, pos2, a, b):
         first = self.cube[pos1].ori
         second = self.cube[pos2].ori
-        self.print_cube()
         for x in (first, second):
             x[a], x[b] = x[b], x[a]
-        self.cube[pos2].ori, self.cube[pos1].ori = first, second
+        self.cube[pos2].ori, self.cube[pos1].ori = second, first
         
     def swap_pos(self, pos1, pos2):
         self.cube[pos1], self.cube[pos2] = self.cube[pos2], self.cube[pos1]
@@ -161,8 +167,6 @@ def solve(scram, **kwargs):
     
     a = vc.get_vector('UFR')
     b = vc.get_vector('UF')
-    a = tuple(a)
-    b = tuple(b)
     
     def solve_pieces(buffer):
         piecetype = vc.piece_type(buffer)
@@ -171,7 +175,6 @@ def solve(scram, **kwargs):
             return 0
         if not cube.is_permuted(buffer):
             cube.solve_piece(buffer)
-            cube.count_solved()
             return solve_pieces(buffer)
         return 1
                 
