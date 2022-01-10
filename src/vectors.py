@@ -62,3 +62,20 @@ def swap_type(v1, v2):
         return edge_swap_type(v1, v2)
     else:
         raise TypeError('Can only swap corners and edges.')
+    
+def edge_ori_swap_type(p1, p2, o1, o2):
+    swapper_type = swap_type(p1, p2)
+    axis = {o1, o2}
+    if o1 == o2:
+        return 0 if swapper_type not in {2, 3} else 1
+    elif swapper_type == 1:
+        return 0 if axis == {0, 2} else 1
+    elif swapper_type in {2, 3}:
+        return 0 if axis == {0, 2} or axis == {1, 2} else 1
+    elif swapper_type == 4:
+        return 0 if axis == {1, 2} else 1
+    else:
+        return 1
+    pass
+        
+    
