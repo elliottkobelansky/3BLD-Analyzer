@@ -1,6 +1,5 @@
 # TODO (Cube solver)
 - Config
-- UF/UR swap stuff
 - Format solve into human readable
 - Floating 2flips/2twists/4flips/3twists
     - always find optimal pairing to reduce algs
@@ -21,6 +20,12 @@
 - Calculate moves
 - Input orientation
 - Break order, buffer order, certain amount of buffer
+
+# TODO (Docs)
+- Document cube.skeleton cube object
+- All of search.py
+- 1 function in swap.py
+- Solveutils
 
 
 # Possible metrics

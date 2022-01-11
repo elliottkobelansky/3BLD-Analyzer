@@ -1,6 +1,6 @@
 import solveutils
 import scramble 
-import vectors as vc
+import cube.vectors as vc
 
 
 def log(log, info):
@@ -24,37 +24,51 @@ def solve(scram):
     
     while cube.count_solved('corner') < 8:
         if cube.is_permuted(corner_buffer):
-            info = cube.cycle_break(corner_buffer)
+            try: 
+                info = cube.cycle_break(corner_buffer)
+            except:
+                info = cube.corner_twist(corner_buffer)    
             log(corner_log, info)
         info = cube.solve_piece(corner_buffer)
         log(corner_log, info)
-        
         
     if cube.corner_parity:
         cube.pseudoswap(edge_buffer, (0, 2, 1)) 
     
     while cube.count_solved('edge') < 12:
         if cube.is_permuted(edge_buffer):
-            info = cube.cycle_break(edge_buffer)
-            log(edge_log, info)
+            try: 
+                info = cube.cycle_break(edge_buffer)
+            except:
+                info = cube.flip_or_twist(edge_buffer)
         info = cube.solve_piece(edge_buffer)
         log(edge_log, info)
     
     print(scram) 
     print(corner_log, edge_log)
     
-def test():
+def test(scram):
+    edge_log = {}
     cube = solveutils.Solver()
-    cube.pseudoswap((1, 2, 0), (0, 2, 1))
-    cube.print_cube()
-
+    cube = scramble.scramble(cube, scram)
+    while cube.count_solved('edge') < 12:
+        if cube.is_permuted((1, 2, 0)):
+            try: 
+                info = cube.cycle_break((1, 2, 0))
+            except:
+                info = cube.flip_or_twist((1, 2, 0))
+        else:
+            info = cube.solve_piece((1, 2, 0))
+        log(edge_log, info)
+        
+    print(scram, edge_log)
+            
 def main():
     with open('scrambles.txt') as f:
         scrams = f.read().splitlines()
     
-    scrams = ["L2 U' F2 U' B' F2 L' B F' L2 B R2 U2 L F' L2 D' B2"]
     for scram in scrams:
-        solve(scram)
+        test(scram)
     
 if __name__ == "__main__":
     main()
