@@ -176,7 +176,6 @@ class CubePrimitives(CubeSkeleton):
         int
             Zero on success.
         """
-        
         first = self.cube[pos1].ori
         second = self.cube[pos2].ori
         for x in (first, second):

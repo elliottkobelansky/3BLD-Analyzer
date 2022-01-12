@@ -126,7 +126,8 @@ class CubeSkeleton:
             
         Returns
         -------
-        None 
+        int
+            Zero on success.
         
         Notes
         -----
@@ -152,6 +153,7 @@ class CubeSkeleton:
         for piece in self.cube[index].flatten():
             piece.ori[axis1], piece.ori[axis2] \
             = piece.ori[axis2], piece.ori[axis1] 
+        return 0
     
     def get_index(self, face):
         """
@@ -185,7 +187,8 @@ class CubeSkeleton:
         
         Returns
         -------
-        None 
+        int
+            Zero on success.
         """
         for face in ['U', 'F', 'L', 'R', 'B', 'D']:
             axis = FACES[face]['axis']
@@ -193,3 +196,4 @@ class CubeSkeleton:
             namepieces = np.vectorize(lambda x: x.get_color(axis))
             preview = FACES[face]['preview'](self.cube[index])
             print(namepieces(preview), '\n')
+            return 0

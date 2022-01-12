@@ -7,7 +7,6 @@
 - Floating and psweudoswapping
 - LTCT, full ltct
 - Full parity vs pseudoswapping
-- Weak swap
 - Input orientation (for wca scrambles, user  input)
 
 # TODO (ML)

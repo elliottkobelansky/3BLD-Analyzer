@@ -23,13 +23,15 @@ def solve(scram):
     corner_buffer = vc.get_vector('UFR')
     
     while cube.count_solved('corner') < 8:
+        if cube.count_solved('corner') == 7:
+            cube.print_cube()
         if cube.is_permuted(corner_buffer):
             try: 
                 info = cube.cycle_break(corner_buffer)
             except:
-                info = cube.corner_twist(corner_buffer)    
-            log(corner_log, info)
-        info = cube.solve_piece(corner_buffer)
+                info = cube.flip_or_twist(corner_buffer)    
+        else:
+            info = cube.solve_piece(corner_buffer)
         log(corner_log, info)
         
     if cube.corner_parity:
@@ -41,7 +43,8 @@ def solve(scram):
                 info = cube.cycle_break(edge_buffer)
             except:
                 info = cube.flip_or_twist(edge_buffer)
-        info = cube.solve_piece(edge_buffer)
+        else:
+            info = cube.solve_piece(edge_buffer)
         log(edge_log, info)
     
     print(scram) 
@@ -68,7 +71,7 @@ def main():
         scrams = f.read().splitlines()
     
     for scram in scrams:
-        test(scram)
+        solve(scram)
     
 if __name__ == "__main__":
     main()

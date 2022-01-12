@@ -77,5 +77,8 @@ def edge_ori_swap_type(p1, p2, o1, o2):
     else:
         return 1
     pass
+
+def corner_ori_swap_type(p1, p2, o1, o2):
+    pass
         
     
