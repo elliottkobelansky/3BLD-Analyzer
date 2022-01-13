@@ -3,8 +3,7 @@
 - Format solve into human readable
 - Floating 2flips/2twists/4flips/3twists
     - always find optimal pairing to reduce algs
-- Have twists not be 2 breaks
-- Floating and psweudoswapping
+- Psweudoswapping based on corner buffer
 - LTCT, full ltct
 - Full parity vs pseudoswapping
 - Input orientation (for wca scrambles, user  input)
@@ -33,3 +32,4 @@
 - Number of flipped edges and corners
 - Specific comms
 - Movecount (with commsheet input)
+- Parity or no

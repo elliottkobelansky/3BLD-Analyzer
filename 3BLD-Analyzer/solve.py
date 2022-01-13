@@ -12,20 +12,28 @@ def log(log, info):
     except:
         log[buffer] = [pos]
 
+BUFFERORDER = {
+    'corner': ['UFR', 'UFL', 'UBL', 'UBR', 'DFR', 'DFL', 'DBR'],
+    'edge': ['UF', 'UB', 'UR', 'UL', 'DF', 'DB', 'FR', 'FL', 'DR', 'DL'] 
+}
+
 def solve(scram):
     cube = solveutils.Solver()
     cube = scramble.scramble(cube, scram)
     corner_log = {}
     edge_log = {}
     
-    
-    edge_buffer = vc.get_vector('UF')
-    corner_buffer = vc.get_vector('UFR')
+    edge_buffers = iter(BUFFERORDER['edge'])
+    corner_buffers = iter(BUFFERORDER['corner'])
+    edge_buffer = vc.get_vector(next(edge_buffers))
+    corner_buffer = vc.get_vector(next(corner_buffers))
     
     while cube.count_solved('corner') < 8:
-        if cube.count_solved('corner') == 7:
-            cube.print_cube()
         if cube.is_permuted(corner_buffer):
+            if cube.is_solved(corner_buffer):
+                if not cube.corner_parity:
+                    corner_buffer = vc.get_vector(next(corner_buffers))
+                    continue
             try: 
                 info = cube.cycle_break(corner_buffer)
             except:
@@ -36,9 +44,14 @@ def solve(scram):
         
     if cube.corner_parity:
         cube.pseudoswap(edge_buffer, (0, 2, 1)) 
-    
+   
+    # AFTER THIS DONT EDIT SO WE CAN SAVE 
     while cube.count_solved('edge') < 12:
         if cube.is_permuted(edge_buffer):
+            if cube.is_solved(edge_buffer):
+                if not cube.edge_parity:
+                    edge_buffer = vc.get_vector(next(edge_buffers))
+                    continue
             try: 
                 info = cube.cycle_break(edge_buffer)
             except:
