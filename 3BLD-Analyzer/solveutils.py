@@ -3,40 +3,60 @@ from cube.search import SearchCube
 import cube.vectors as vc
 import numpy as np
 
+
 class Solver(CubePrimitives, SearchCube):
+    def __init__(self):
+        super().__init__()
+        self.log = {}
+
     def solve_piece(self, buffer):
         pos = self.cube[buffer].pos
-        buffer, pos, axis = self.log(buffer, pos)
+        self.log_it(buffer, pos)
         self.solve_ori(buffer, pos)
         self.swap_pos(buffer, pos)
         self.change_parity(buffer)
-        return buffer, pos, axis
-     
+        return 0
+
     def cycle_break(self, buffer, ori=0):
         pos = self.find_unpermuted_piece(buffer)
         if not pos:
             raise Exception("No piece to break to.")
         o = self.get_o(buffer, pos, True)
+        self.log_it(buffer, pos, axis=o)
         self.swap_ori(buffer, pos)
         self.swap_pos(buffer, pos)
         self.change_parity(buffer)
-        return self.log(buffer, pos, o)
-    
+        return 0
+
     def flip_or_twist(self, buffer):
         piece_type = vc.piece_type(buffer)
         flipped_piece = self.find_flipped_piece(buffer)
         flipped_ori = tuple(self.cube[flipped_piece].ori)
-        if piece_type == 'edge':
+        self.log_it(buffer, flipped_piece, ct=True)
+        if piece_type == "edge":
             self.flip_edges(buffer, flipped_piece)
-        if piece_type == 'corner':
+        if piece_type == "corner":
             xtoy = True if flipped_ori.index(1) == 0 else False
             self.twist_corners(buffer, flipped_piece, xtoy)
-        return self.log(buffer, flipped_piece, 1)
-    
-    def log(self, buffer, pos, axis=None, ct=None):
+        return 0
+
+    def log_it(self, buffer, pos, axis=None, ct=False):
         axis = self.cube[buffer].ori[1] if not axis else axis
-        return buffer, pos, axis
-    
+        piece_type = vc.piece_type(buffer)
+        buffer, pos = vc.get_name(buffer), vc.get_name(pos, axis)
+        if not ct:
+            try:
+                self.log[buffer].append(pos)
+            except:
+                self.log[buffer] = [pos]
+        else:
+            flip = "flip" if piece_type == "edge" else "twist"
+            try:
+                self.log[flip].append(buffer, pos)
+            except:
+                self.log[flip] = [buffer, pos]
+        return 0
+
     def pseudoswap(self, pos1, pos2):
         pos1, axis1 = self.find_piece(pos1)
         pos2, axis2 = self.find_piece(pos2)
@@ -51,9 +71,9 @@ class Solver(CubePrimitives, SearchCube):
         p2, a2 = self.cube[pos2].ori, pos2.index(1)
         for p, a in zip((p1, p2), (a1, a2)):
             axis1, axis2 = {0, 1, 2} - {a}
-            p[axis1], p[axis2] = p[axis2], p[axis1]     
+            p[axis1], p[axis2] = p[axis2], p[axis1]
         self.cube[pos1].ori, self.cube[pos2].ori = p1, p2
-        
+
     def twist_corners(self, pos1, pos2, xtoy=True):
         k1, k2 = (-1, 1) if xtoy == True else (1, -1)
         ori1 = self.cube[pos1].ori
